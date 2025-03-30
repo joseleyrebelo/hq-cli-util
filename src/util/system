@@ -1,0 +1,50 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER ensure
+source $HQ_IMPORTER narrate
+source $HQ_IMPORTER utter
+
+
+# Todo - deprecate 
+system__illegal_args () { printf '\U26A1\U26A1\tIllegal arguments'; }
+
+system__run_commands () { while read entry; do $entry; done <<< "$1"; }
+
+system__function_usage_manual() {
+    local function_name=$funcstack[2]
+    local function_arguments=""
+    local function_options=""
+    local error_message=""
+    # TODO - Create default 
+    optspec="r:m:o:"
+    while getopts "$optspec" optchar; do
+        case "${optchar}" in
+            r  ) arguments="$OPTARG"        ;;
+            m  ) error_message="$OPTARG"              ;;
+            o  ) function_options="$OPTARG"     ;;
+            ? )  echo "Error on system__function_usage_manual "  ;;
+        esac
+    done
+    
+    cat <<EOF
+    $function_name $function_arguments
+    $error_message
+            Usage: $function_name <[options]>
+            Options:Options
+                    $function_options
+                    # -b   --bar            Set bar to yes    ($foo)
+                    # -f   --foo            Set foo to yes    ($bart)
+                    # -h   --help           Show this message
+                    # -A   --arguments=...  Set arguments to yes ($arguments) AND get ARGUMENT ($ARG)
+                    # -B   --barfoo         Set barfoo to yes ($barfoo)
+                    # -F   --foobar         Set foobar to yes ($foobar)
+EOF
+}
+
+system__date__m2s () { 
+    echo "$(echo "$1/1000" | bc -l | sed 's/0\{1,\}$//')"
+}
+
+system__hello_world () {
+	echo "Hello world!"
+}

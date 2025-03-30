@@ -1,0 +1,30 @@
+#!/bin/zsh
+
+
+$ () {
+	# TODOC - how zsh smartness on passing args may be a disavantage hre.
+	local inference_alias="$1"
+	local suffix_args="${@:2}"
+	local infered_prefix="${(P)inference_alias}"
+	#local infered_items=($(echo $infered_prefix))
+	#local func="${infered_items[1]}"
+	#local infered_args="${infered_items[@]:1}"
+	#echo output="$($func $infered_args $suffix_args)"
+
+
+	# A try 
+	#cmd="$infered_part $suffix_args"
+	#echo "$(${=cmd})"
+	
+	# Replaces this 
+	#${=ylconf} add ___$PKG_NAME Homer "Marcus Aurelious" "Alexander the Great"
+
+	# Don't use quotes when passing args that may contain space 
+	# ::zsh:dc-01
+	# 
+	echo $(${=infered_prefix} ${@:2})
+	return $?
+
+	# Todo check if variable exists before trying to get infered values 
+	# Throw error if not
+}

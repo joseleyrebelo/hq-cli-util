@@ -1,0 +1,19 @@
+#!/bin/zsh
+
+# Base format for datetime is '2007-09-01 17:30:24'
+
+datetime__now(){
+	echo $(date +"%Y-%m-%d %H:%M:%S")
+}
+
+datetime__diff() {
+	local first=$(date +%s -d "$1")
+	local second=$(date +%s -d "$2")
+	echo $(( $first - $second ))
+}
+
+datetime__diff__mins() {
+	local mins_per_hour=60
+	local subtraction=$(datetime__diff $1 $2) 
+	echo $(( $subtraction / $mins_per_hour ))
+}

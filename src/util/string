@@ -1,0 +1,81 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER system
+source $HQ_IMPORTER utter
+
+string__contains() {
+	[[ $1 == *$2* ]] &&	return 0 || return 1
+}
+
+
+string__trim_post() {
+  if [[ $# -ge 1 ]]; then
+    local text=$1
+    local search=" "
+    [[ $2 ]] && search=$2
+    local search_length=${#search}
+    local text_length=${#text}
+    local loop_needle=$((text_length - search_length))
+    local cut_length=$text_length
+    local keep_going=1
+    while [[ $keep_going == 1 && $loop_needle -ge 0 ]]; do
+      if [[ ${text:$loop_needle:$search_length} == $search ]]; then
+        cut_length=$((loop_needle))
+        loop_needle=$((loop_needle - search_length))
+      else
+        keep_going=0
+      fi
+    done
+    echo ${text:0:$cut_length}
+    return 1
+  else
+    system__missing_args
+    return 0
+  fi
+}
+
+# Todo - make use of zsh/bash string substitution 
+string__trim_pre() {
+	ensure_min_args 1 $@
+  local text=$1
+  local search=" " && [[ $2 ]] && search=$2
+  local search_length=${#search}
+  local text_length=${#text}
+  local loop_needle=0
+  local cut_length=0
+  local cut_needle=0
+  local keep_going=1
+  while [[ $keep_going == 1 && $loop_needle -ge 0 ]]; do
+    if [[ ${text:$loop_needle:$search_length} == $search ]]; then
+      loop_needle=$((loop_needle + search_length))
+      cut_needle=$((loop_needle))
+    else
+      keep_going=0
+    fi
+  done
+  cut_length=$((text_length - cut_needle))
+  utter ${text:$cut_needle:$cut_length}
+  return 0
+}
+
+string__trim() {
+	ensure_min_args 1 $@
+  local trim_pre=$(string__trim_pre "$1" $2)
+  if [[ -z $trim_pre ]]; then
+    utter $trim_pre
+		return 1
+	else
+		utter $(string__trim_post "$trim_pre" $2)
+		return 1
+	fi
+}
+
+string__dequote() {
+	ensure_min_args 1 $@
+	local text=$1
+	text="${text#\"}"
+	text="${text%\"}"
+	utter $text
+	return 0
+}
+

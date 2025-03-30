@@ -1,0 +1,34 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER _dev
+source $HQ_IMPORTER array
+
+dir__was_changed(){
+	error__not_implemented
+}
+
+# @todo:coverage test for directories with spaces.
+dir__changed_files(){
+	local saved_dir=$(pwd)
+	local target_dir=$1
+	local start_time=$2
+	local excludes_n=$(array__size $3)
+	local excludes_str=""
+	if [ "$excludes_n" -gt "0" ]; then 
+		# Create exclude part of the find command. It follows this format:
+		# find . -not \( -path "./excluded_dir/" -prune\). 
+		# This syntax and optionology makes find avoid recursive looks into a folder
+		# content.
+		excludes_str=$(array__concat $3 "-not ( -path ./" " -prune ) ")
+	fi
+
+	local current_time=$(datetime__now)
+	local diff_mins=$(datetime__diff__mins $current_time $start_time)
+
+	cd $target_dir
+	# Option "-mmin -<amount_of_mins>" gets files that where changed since
+	# <amount_of_mins> ago. 
+	local find_cmd="find . -mmin -$diff_mins -type f $excludes_str"
+	echo $(${=find_cmd})
+	cd $saved_dir
+}

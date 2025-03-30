@@ -1,0 +1,56 @@
+#!/bin/zsh
+
+hq_importer system
+hq_importer string
+
+pkg__register_sh_oneliner () {
+	# TODOc - abstract from other pkg__register_path
+}
+
+pkg__register_path() {
+	local DIR="${0:A:h}"
+	local LINE="export PATH=\"$DIR/bin:\$PATH\""
+	# TODOc - This can be run once and saved to be accessible via 
+	# system__ func .
+	local SHELL_TYPE=$(echo $0)
+
+	local PROFILE=~/.profile
+	# If on a zsh terminal, overwrites the target profile file 
+	if [[ $(string__contains $SHELL_TYPE "zsh") ]]; then 
+		PROFILE=~/.zprofile
+	fi
+
+	# Finally, inserts $PATH extender line on target profile file.
+	# TODOc - Ensure this is a secure way of adding these changes
+	# - There is a potential to instead source a file that would make
+	# this changes.
+	grep -qsFx "$LINE" "$PROFILE" || echo "\n$LINE\n" >>"$PROFILE"
+}
+
+
+# @todo:promote - abstract such it accepts any LINE
+pkg__register_HQ_IMPORTER_env () {
+	local profile=~/.profile
+	local shell_type=$(echo $0)
+	local line="export HQ_IMPORTER=\"$HQ_IMPORTER\""
+	
+	# @todo:refactor/readability - if possible 
+	if [[ $(string__contains $shell_type "zsh") ]]; then 
+		profile=~/.zprofile
+	fi
+
+	# Write $line on $profile if not found on grep
+	grep -qsFx "$line" "$profile" || echo "\n$line\n" >>"$profile"
+}
+
+pkg__install(){
+				echo "in pkg__install"
+	local BIN_FILE=bin/"${PWD##*/}"
+	echo $BIN_FILE
+	ensure_or_mkdir bin
+	touch $BIN_FILE 
+	echo "#!/bin/zsh" > $BIN_FILE 
+}
+
+#TODOc - Copied / Powerful / Complex
+# exec sudo --login --user "$USER" /bin/sh -c "cd '$PWD'; exec '$SHELL' -l"

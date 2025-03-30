@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+
+source $HQ_IMPORTER colors
+source $HQ_IMPORTER ensure
+
+local NARRATE_ENABLED__hlpr=true
+local NARRATE_COLOR__hlpr=""
+
+narrate__enable() {
+	ensure_n_args 1 $@
+	NARRATE_ENABLED__hlpr=$1
+}
+
+narrate__color() {
+	NARRATE_COLOR__hlpr=$1
+}
+
+narrate() {
+	ensure_min_args 1 $@
+	# Prints to screen buffer tty
+	$NARRATE_ENABLED__hlpr && echo "${NARRATE_COLOR__hlpr}$@${Color_Off}" >/dev/tty
+} 
+
+

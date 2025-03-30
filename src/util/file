@@ -1,0 +1,63 @@
+#!/bin/zsh
+
+source "$APP_DIR/lib/util/date"
+
+file__count_lines() {
+  if [ $# -eq 1 ]; then
+    local file=$1
+    local wc_info=($(wc -l $file))
+    local lines=${wc_info[0]}
+    lines=$((lines + 1))
+    echo $lines
+  else
+    system__missing_args
+  fi
+}
+
+file__is_valid_name() {
+  # https://stackoverflow.com/a/49832505
+  name=$1
+  name_length=$(echo "${#name}")
+  name_first_char=$(echo $name | cut -c1-1)
+  # Checks length of name
+  if [ $name_length -gt 255 ]; then
+    echo "False"
+    exit
+  # Checks if name chars are valid
+  elif ! [[ $name =~ ^[0-9a-zA-Z._-]+$ ]]; then
+    echo 'False'
+    exit
+  # Check if name first char is valid
+  elif ! [[ $name_first_char =~ ^[0-9a-zA-Z]+$ ]]; then
+    echo 'False'
+    exit
+  else
+    echo 'True'
+    exit
+  fi
+}
+
+file__make_executable() { 
+	if [ $# -eq 1 ]; then chmod 755 $1; else system__illegal_args; fi; }
+
+file__seconds_since_modified() {
+  date_file=$(date -r "$1" -u +%s)
+  echo $(($(date__now_seconds) - date_file))
+}
+
+file__refresh_source() {
+  source $1
+  echo "Fresh. (modified $(file__seconds_since_modified $1)s ago)"
+}
+
+file__query_line(){
+	local line=$(grep $2 $1 -m1)
+	[ ! -z $line ] echo $line
+	return $? 
+}
+
+# TODO - refactor - use __query_line instead
+file__get_match_line() {
+  local match_line=$(grep -n $1 $2 | cut -d : -f 1)
+  [ -z "$match_line" ] && echo "-1" || echo $match_line
+}

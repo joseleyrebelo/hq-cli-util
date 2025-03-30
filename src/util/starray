@@ -1,0 +1,20 @@
+#!/bin/zsh
+
+# TODO make it into __get <line> <word>
+#TODO use hqconf connect like to strray (keeps a value in memory) 
+# - starray variable = something
+starray__word(){
+	ensure_min_args 2 "$@"
+	local delim=" " && [ ! -z $3 ] && delim=$3
+	local word=$(cut -d $delim -f $1 <<< $2)
+	[ ! -z $word ] && echo $word
+	return $?
+}
+
+starray__query_line(){
+	ensure_n_args 2 "$@"
+	local line=$(echo $2 | grep $1 -m1)
+	[ ! -z $line ] && echo $line
+	return $?
+}
+

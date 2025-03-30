@@ -1,0 +1,34 @@
+#!/bin/bash
+
+export SOURCED_LIBS=""
+
+lib__src() {
+	#ensure_n_args 1 "$@"
+	local hq_lib_path="$APP_DIR/lib/util/$1"	
+	echo "$hq_lib_path" # &>2
+}
+
+lib__import(){
+	# TODO - this will be more applicable when we running streamlined actions
+	# such as install or run, where the action will defined what lib it needs
+	# currently this lib__imports are not useful since every lib is being
+	# sourced to the require file.
+	# - I must test if I lib__import can indeed replace source as used in 
+	# the require file.
+	ensure_n_args 1 "$@"
+	local hq_lib_path="$APP_DIR/lib/util/$1"
+
+  # Improvement - use array instead of spaced delimit set ??
+	ensure_file $hq_lib_path
+
+	# TODOc paths are complicated ensure that this has propers handling
+	# of paths(mutations) string comparison
+	string__contains $hq_lib_path $SOURCED_LIBS
+	#(($?)) && echo "it contains" || echo "it doesn't contain" && source "$hq_lib_path" && SOURCED_LIBS="$SOURCED_LIBS $hq_lib_path "
+	if ((! $?)) then 
+		source "$hq_lib_path" 
+		SOURCED_LIBS="$SOURCED_LIBS $hq_lib_path "
+	fi
+	# ensure not in array ??
+	#ensure_not_in_array $hq_lib_path $SOURCED_LIBS 
+}
