@@ -2,15 +2,29 @@
 
 # IS (1/2)
 
-is_set (){
+is__set(){
+	[[ "$1" != "" ]] && return 0 || return 1
 }
 
-is_dir(){
-	[[ -d $1 ]] && return 0 || return 1 
+is__equal() {
+	ensure__n_args 2 $@
+	[[ "$1" == "$2" ]] && return 0 || return 1
+}
+
+is__bigger() {
+	[[ $1 -gt $2 ]] && return 0 || return 1
+}
+
+is__file() {
+	[[ -f $1 ]] && return 0 || return 1
+}
+
+is__dir(){
+	[[ -d $1 ]] && return 0 || return 1
 }
 
 
-is_n_args() {
+is__n_args() {
 	# This is a readability and dry-helper function, it's not
 	# optimized for performance. Approached from a bash utilitarian
 	# priciple. Please note:
@@ -21,22 +35,19 @@ is_n_args() {
 	# minus one.
 	local args_n=$(( $# - 1 )) 
 	# TODO - organize/continue documentation
-	# - DOC $(( - in this instance runs an arbitrary operation and outputs
-	# diretly, instead of direct to $?, or STDOUT 
-	# - DOC $# - number of args 
 	local target=$1 # $1 gets the target size
 	(( args_n == target )) && return 0 || return 1
 	# - DOC (( - Returns the logical result of the operation it wraps in
 	# this instance.
 }
 
-is_min_args() {
+is__min_args() {
 	local target=$1
 	local args_n=$(( $# - 1 ))
 	[ $args_n -ge $1 ] && return 0 || return 1
 }
 
-is_args_n_range () {
+is__args_n_range () {
 	#TAIL - create this function to connect to importer requirment
 	# - PRoceed to fix importer file to allow two args 
 	# >> Perhaps you want a min type situation instead of a set range ??
@@ -48,12 +59,12 @@ is_args_n_range () {
 
 # ISN'T - Negation of previos is_... functions 
 
-isnt_n_args() {
-	is_n_args "$@"; (( $? )) && return 1 || return 0
+isnt__n_args() {
+	is__n_args "$@"; (( $? )) && return 1 || return 0
 }
 
-isnt_min_args() {
-	is_min_args "$@"; (( $? )) && return 1 || return 0
+isnt__min_args() {
+	is__min_args "$@"; (( $? )) && return 1 || return 0
 }
 
 

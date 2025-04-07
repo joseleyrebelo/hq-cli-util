@@ -1,0 +1,15 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+
+success() {
+	local msg=""
+	$(is__set $1) && msg=" - $1"
+	echo "Test success$msg" 
+}
+
+fail() {
+	local msg=""
+	$(is__set $1) && msg=" - $1"
+	echo "Test failed$msg" 
+}

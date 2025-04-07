@@ -4,17 +4,17 @@ source $HQ_IMPORTER system
 source $HQ_IMPORTER string
 
 hqconf () {
-	ensure_n_args 2 "$@"
+	ensure__n_args 2 "$@"
 	# TODO - shouldn't have to fail ?? 
 	# - There are scenarios where u want to handle file not existing 
-	ensure_file $2 	
+	ensure__file $2 	
 	declare -g "$1=__hqconf__actions $2" 
-	# TODO important - ensure $? comes from ensure_file instead of echo 
+	# TODO important - ensure $? comes from ensure__file instead of echo 
 	return $?
 }
 
 __hqconf__actions () {
-	ensure_min_args 3 $@
+	ensure__min_args 3 $@
 	local ALLOWED_ACTIONS="add get" 
 	# ::zsh:td-01
 	string__contains $2 $ALLOWED_ACTIONS 
@@ -27,8 +27,8 @@ __hqconf__actions () {
 }
 
 hqconf__add () {
-	ensure_min_args 3 $@
-	ensure_file $1
+	ensure__min_args 3 $@
+	ensure__file $1
 	local line=$(hqconf__get_line $1 $2)
 	local sorted_entry=$(hqconf__format_config ${@:2})
 	if [[ ! -z $line ]]; then
@@ -42,7 +42,7 @@ hqconf__add () {
 }
 
 hqconf__format_config () {
-	ensure_min_args 2 $@
+	ensure__min_args 2 $@
 	local result="$1 :" 
 	for val in "${@:2}"; do result+=" \"${val//\"/\\\\\"}\"" done
 	utter $result
@@ -50,15 +50,15 @@ hqconf__format_config () {
 }
 
 hqconf__get_line () {
-	ensure_min_args 2 $@
-	ensure_file $1
+	ensure__min_args 2 $@
+	ensure__file $1
   utter $(v="$2 :" awk 'index($0, ENVIRON["v"])==1 {print NR}' $1)
 	return $?
 }
 
 hqconf__get () {
-	ensure_min_args 2 $@
-	ensure_file $1
+	ensure__min_args 2 $@
+	ensure__file $1
 	
 	local OUT_OF_RANGE_ERROR="(hqconf) Error: query index is out of range"
 	local DELIMITER="\" \""

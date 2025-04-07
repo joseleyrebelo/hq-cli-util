@@ -1,0 +1,82 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER narrate
+
+
+# Here _lr stands for last return ($?
+ensure__lr() {(( $? )) && exiter $1}
+exiter() {
+	local stack_i=2
+	local caller=$funcstack[$stack_i]
+	local msg=""
+	local ps=$2
+	while [[ "$caller" == *"ensure__"* ]]; do
+		caller_before1=$caller_before
+		caller_before1=$caller_before
+		caller_before=$caller
+		((stack_i++))
+		caller=$funcstack[$stack_i]
+	done
+	[ -z $caller ] && msg="[(root )/$caller]" ||
+		[ -z $caller_before1 ] && msg="[$caller_before/$caller]" ||
+			msg="[$caller_before1/$caller_before/$caller]"
+
+	[ ! -z $ps ] && ps="\n- $ps"
+	narrate $msg $1 $ps
+	exit 1
+}
+
+
+ensure__dependency() {
+  type $1 >/dev/null 2>&1 || {
+		exiter "Aborting operation ('$1' is required but not installed)."
+  }
+}
+
+ensure__n_args () {
+	isnt__n_args $@; ensure__lr "Args(n) error"
+}
+
+ensure__min_args () {
+	isnt__min_args $@; ensure__lr "Args(min) error"
+}
+
+ensure__args_n_range () {
+	isnt__args_n_range $@; ensure__lr "Args(range) error"
+}
+
+ensure__file() {
+	ensure__min_args 1 $@
+	[ ! -f $1 ] && exiter $2 "Aborting ($1 isn't a file)"
+}
+
+ensure__dir() {
+	ensure__min_args 1 $@
+	[ ! -d $1 ] && exiter $2 "Aborting, \"$1\" isn't a directory"
+}
+
+error_handler() { echo $1 && exit 1 }
+
+# - ens...awn func should have an exit if empty
+ensure__dir_or_spawn () {
+	ensure__min_args 1 "$@"
+	# TODOc - Use of curly brackets to have or taking effect as per
+	# mkdir return instead of -d $1 logic.
+  [ ! -d $1 ] && { mkdir -p $1 || exit 1 }
+}
+
+ensure__file_or_spawn () {
+	ensure__min_args 1 "$@"
+	[ ! -f $1 ] && { touch $1 || exit 1 }
+}
+
+ensure__not_empty() {
+	ensure__min_args 1 "$@"
+	[ -z $1 ] && exiter "Aborting ($1 is an empty string)"
+}
+
+ensure__not_in_array() {
+	# TODO - ...
+}
+

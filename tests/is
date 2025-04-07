@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER ensure
+
+
+is__file _samplefile && 
+	success "As expected _samplefile exists." || 
+	fail
+
+is__file not-file.db && 
+	fail || 
+	success "As expected not-file.db does not exist." 
+
+is__equal "sam" "sam" &&
+	success "As expected 'sam' and 'sam' match" ||
+	fail
+
+is__equal "sam" "samee" &&
+	fail "on 'sam' 'samee'" || 
+	success "As expected 'sam' and 'samee' don't match"
+
+is__bigger "1" "0" && 
+	success "As expected 1 is bigger than 0" ||
+	fail "on is bigger 1 0"

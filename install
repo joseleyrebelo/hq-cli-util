@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-HQ_IMPORTER="${0:A:h}/src/importer"
+HQ_IMPORTER="${0:A:h}/src/_importer"
 source src/util/pkg
 
 pkg__register_HQ_IMPORTER_env

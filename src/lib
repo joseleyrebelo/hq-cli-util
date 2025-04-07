@@ -3,7 +3,7 @@
 export SOURCED_LIBS=""
 
 lib__src() {
-	#ensure_n_args 1 "$@"
+	#ensure__n_args 1 "$@"
 	local hq_lib_path="$APP_DIR/lib/util/$1"	
 	echo "$hq_lib_path" # &>2
 }
@@ -15,11 +15,11 @@ lib__import(){
 	# sourced to the require file.
 	# - I must test if I lib__import can indeed replace source as used in 
 	# the require file.
-	ensure_n_args 1 "$@"
+	ensure__n_args 1 "$@"
 	local hq_lib_path="$APP_DIR/lib/util/$1"
 
   # Improvement - use array instead of spaced delimit set ??
-	ensure_file $hq_lib_path
+	ensure__file $hq_lib_path
 
 	# TODOc paths are complicated ensure that this has propers handling
 	# of paths(mutations) string comparison
@@ -30,5 +30,5 @@ lib__import(){
 		SOURCED_LIBS="$SOURCED_LIBS $hq_lib_path "
 	fi
 	# ensure not in array ??
-	#ensure_not_in_array $hq_lib_path $SOURCED_LIBS 
+	#ensure__not_in_array $hq_lib_path $SOURCED_LIBS 
 }

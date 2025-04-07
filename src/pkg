@@ -47,7 +47,7 @@ pkg__install(){
 				echo "in pkg__install"
 	local BIN_FILE=bin/"${PWD##*/}"
 	echo $BIN_FILE
-	ensure_or_mkdir bin
+	ensure__or_mkdir bin
 	touch $BIN_FILE 
 	echo "#!/bin/zsh" > $BIN_FILE 
 }

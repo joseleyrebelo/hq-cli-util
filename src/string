@@ -36,7 +36,7 @@ string__trim_post() {
 
 # Todo - make use of zsh/bash string substitution 
 string__trim_pre() {
-	ensure_min_args 1 $@
+	ensure__min_args 1 $@
   local text=$1
   local search=" " && [[ $2 ]] && search=$2
   local search_length=${#search}
@@ -59,7 +59,7 @@ string__trim_pre() {
 }
 
 string__trim() {
-	ensure_min_args 1 $@
+	ensure__min_args 1 $@
   local trim_pre=$(string__trim_pre "$1" $2)
   if [[ -z $trim_pre ]]; then
     utter $trim_pre
@@ -71,7 +71,7 @@ string__trim() {
 }
 
 string__dequote() {
-	ensure_min_args 1 $@
+	ensure__min_args 1 $@
 	local text=$1
 	text="${text#\"}"
 	text="${text%\"}"
