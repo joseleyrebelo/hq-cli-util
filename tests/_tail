@@ -1,0 +1,36 @@
+#!/bi/zsh
+
+source $HQ_ returned
+
+@supplement int one
+@supplement int asda
+
+
+@expression 'somethin = $asda;ssd $asda $adasdsad'
+@description:english 'Esta é uma descricao de algo'
+@description:swalhili 'Esta é uma descricao de algo'
+@description 'Esta é uma descricao de algo'
+@expression 'colors = std:unordered_list("...")'
+@returns '(blue, yellow)'
+
+@expression 'colors = std:unordered_list("...", "grayscale")'
+@returns '(black, white)'
+
+
+
+
+
+
+@mutates max 3
+@expects returns 3
+@expects max 3
+
+@
+@expression 'weird_function @:int @'
+	@when i is "a" @returns ""
+ 
+#@describe "asdasd"
+
+
+#array=(one two three)
+#returned__print `isnt__in_array "four" array`

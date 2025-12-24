@@ -1,0 +1,93 @@
+#!/bin/zsh 
+
+source $HQ_IMPORTER narrate
+source $HQ_IMPORTER relay
+source $HQ_IMPORTER returned
+source $HQ_IMPORTER ensure
+source $HQ_IMPORTER variable
+source $HQ_IMPORTER array
+
+typeset -A private_bookkeeper__matrices
+
+# matrix__new expects one or many args:
+# - 1st arg - the name for the matrix to be created 
+# - other args - the content added to the first row of the matrix
+matrix__new() {
+	ensure__min_args 1
+	ensure__str_format varname $1
+	[[ -n $private_bookkeeper__matrices[$1] ]] && 
+		exiter "Matrix \"$1\" already exists"
+		
+	private_bookkeeper__matrices[$1]="${1}__matrix_bookkeeper"
+	typeset -ga $private_bookkeeper__matrices[$1]
+	typeset -gi $private_bookkeeper__matrices[$1]_count 
+	typeset -g $private_bookkeeper__matrices[$1]_type
+
+	# @todo:tail/implement - default if 2nd arg not set
+	$private_bookkeeper__matrices[$1]_type=$2
+
+	is__bigger $# 2 && matrix__push $@
+}
+
+matrix__push() {
+
+	#oo_use varname:name flag
+
+	ensure__min_args 2 
+
+	local varname=$private_bookkeeper__matrices[$1] 
+	# ensure_not__empty $varname "Aborting, name for matrix is required"
+	ensure__variable $varname
+
+	((${varname}_count++))
+	local items_n=`variable__value ${varname}_count`
+	local item_varname="${1}__matrix_item_$items_n"
+	array__new $item_varname ${@:2} 
+}
+
+matrix__get() {
+	ensure__n_args 1
+	ensure__matrix $1
+	local items_n=`variable__value $(_matrix_varname $1)_count`
+
+	for item in {1..$items_n}; do
+		relay `variable__value ${1}__matrix_item_${item}`
+	done  
+}
+
+matrix__append(){
+	ensure__min_args 3
+	ensure__matrix $1
+
+	# @todo - ensure size/index exists 
+
+	echo ----- --- $@
+	array__push ${1}__matrix_item_${2} ${@:3}
+}
+
+matrix__get_row() {
+	ensure__n_args 2
+	ensure__matrix $1
+
+	relay `variable__value ${1}__matrix_item_${2}`
+}
+
+matrix__get_cell() {
+	ensure__n_args 3
+	ensure__matrix $1
+
+	relay `array__get_item ${1}__matrix_item_${2} $3`
+}
+
+matrix__count() {
+	ensure__n_args 1
+	ensure__matrix $1
+
+	relay `variable__value $(_matrix_varname $1)_count`
+}
+
+ensure__matrix() { is__variable $(_matrix_varname $1) && return 0 || return 1 }
+
+_matrix_varname() { relay $private_bookkeeper__matrices[$1] }
+
+

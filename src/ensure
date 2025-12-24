@@ -1,32 +1,7 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER is
 source $HQ_IMPORTER narrate
-
-
-# Here _lr stands for last return ($?
-ensure__lr() {(( $? )) && exiter $1}
-exiter() {
-	local stack_i=2
-	local caller=$funcstack[$stack_i]
-	local msg=""
-	local ps=$2
-	while [[ "$caller" == *"ensure__"* ]]; do
-		caller_before1=$caller_before
-		caller_before1=$caller_before
-		caller_before=$caller
-		((stack_i++))
-		caller=$funcstack[$stack_i]
-	done
-	[ -z $caller ] && msg="[(root )/$caller]" ||
-		[ -z $caller_before1 ] && msg="[$caller_before/$caller]" ||
-			msg="[$caller_before1/$caller_before/$caller]"
-
-	[ ! -z $ps ] && ps="\n- $ps"
-	narrate $msg $1 $ps
-	exit 1
-}
-
+source $HQ_IMPORTER is
 
 ensure__dependency() {
   type $1 >/dev/null 2>&1 || {
@@ -34,49 +9,93 @@ ensure__dependency() {
   }
 }
 
-ensure__n_args () {
-	isnt__n_args $@; ensure__lr "Args(n) error"
+# @todo/evaluate - why not receive $# instead of $@
+# - and ensure that args are all number 
+hq_aliased__ensure__n_args() {
+	hq_aliased__isnt__n_args $@ && exiter "Args(n) error"
 }
 
-ensure__min_args () {
-	isnt__min_args $@; ensure__lr "Args(min) error"
+hq_aliased__ensure__min_args() {
+	hq_aliased__isnt__min_args $@ && exiter "Args(min) error"
 }
 
-ensure__args_n_range () {
-	isnt__args_n_range $@; ensure__lr "Args(range) error"
+
+ensure__args_n_range() {
+	isnt__args_n_range $@ && exiter "Args(range) error"
 }
 
 ensure__file() {
-	ensure__min_args 1 $@
+	ensure__min_args 1
 	[ ! -f $1 ] && exiter $2 "Aborting ($1 isn't a file)"
 }
 
 ensure__dir() {
-	ensure__min_args 1 $@
+	ensure__min_args 1
 	[ ! -d $1 ] && exiter $2 "Aborting, \"$1\" isn't a directory"
 }
 
+ensure__variable() {
+	ensure__n_args 1
+	isnt__variable $@ && exiter "Aborting, varname \"$1\" isn't a \"variable\"."
+}
+
+ensure__pointer() {
+	ensure__n_args 1
+	isnt__pointer $@ && exiter "Aborting, varname \"$1\" isn't a \"pointer\"."
+}
+
+ensure__str_format() {
+	ensure__min_args 2
+	ensure_not__empty $2 "Aborting, format validation requires non-empty string". 
+	string_isnt $1 $2 && exiter $3 "String \"$2\" isnt a $1"
+}
+
+ 
+
+
+
 error_handler() { echo $1 && exit 1 }
 
-# - ens...awn func should have an exit if empty
-ensure__dir_or_spawn () {
-	ensure__min_args 1 "$@"
+ensure__dir_or_spawn() {
+	ensure__min_args 1
 	# TODOc - Use of curly brackets to have or taking effect as per
 	# mkdir return instead of -d $1 logic.
   [ ! -d $1 ] && { mkdir -p $1 || exit 1 }
 }
 
-ensure__file_or_spawn () {
-	ensure__min_args 1 "$@"
+ensure__file_or_spawn() {
+	ensure__min_args 1
 	[ ! -f $1 ] && { touch $1 || exit 1 }
 }
 
-ensure__not_empty() {
-	ensure__min_args 1 "$@"
-	[ -z $1 ] && exiter "Aborting ($1 is an empty string)"
+
+
+
+# ------------------------------------------------------- #
+# ensure_not__<...>
+# ------------------------------------------------------- #
+
+# @todo:refactor/consolidate - naming 
+# - ensure_not__empty instead of current 
+ensure_not__empty() {
+	# Note "${=@}" acknowledges empty strings.
+	# - @todo:refactor/consolidate - use this level of precision on ensure__min_args
+	isnt__min_args 2 && 
+		exiter "Error: ${0}[function] received $# args but requires 2."
+
+	[[ -z $1 ]] && exiter "Aborting, unexpected empty value." $2
 }
 
+ensure_not__variable() {
+	is__variable $1 && exiter "Variable $1 already exists; underised state" 
+}
+
+ensure_not__pointer() {
+	is__pointer $1 && exiter "$1 already exists; underised state" 
+}
+
+# TODO - ...
 ensure__not_in_array() {
-	# TODO - ...
+	echo "is__args_n_range is not implemented" 
 }
 

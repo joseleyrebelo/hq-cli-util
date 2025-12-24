@@ -1,0 +1,130 @@
+#!/bin/zsh
+
+# ordained naming 
+#	- examples:
+# 		oo last
+# 		...
+# 		oo mode=max
+# 		run_function
+# 		...
+# 		order last (false)
+
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER matrix
+source $HQ_IMPORTER starray
+source $HQ_IMPORTER string
+local count=0
+
+alias funcstack_str="local __fs_str=\$funcstack; echo \$(starray__concat __fs_str \"/\")"
+alias -g oo="oo__main \$@ " 
+
+# oos (oo stack)
+local oos_index=0
+matrix__new oo_stack
+
+oo__main(){
+	local args=$@
+	local args_n=$#
+	local is_registry=false
+	local is_getter=false
+
+	# "fs_p" stands for funcstack path
+	#local fs_p=`funcstack_str`
+	local fs_p=$(string__trim_pre $(funcstack_str) "$0/")
+
+	# Sort operation mode (registry or getter)
+	is__equal $args_n 1 &&
+		{ string__contains $1 "=" && is_registry=true || is_getter=true } || 
+		is_registry=true
+
+
+	if $is_registry; then
+		local is_first_registry=false
+		local is_appendix_registry=false
+		local last_fs_p=""
+		local expected_fs_p=$(string__split $fs_p "/" 2) 
+		local part_fs_p=$(string__split $fs_p "/" 1) 
+		is__equal $oos_index 0 && is_first_registry=true
+
+		$is_first_registry ||
+			last_fs_p=`matrix__get_cell oo_stack $((oos_index)) 1`
+
+		is__equal $fs_p $last_fs_p && is_appendix_registry=true
+			
+			
+		#echo "expected - $fs_p"
+		#echo "last - $last_fs_p"
+		#echo " >>> ${@:2}"
+
+		#local key=`string__split $1 ":" 1`
+		#local value=`string__split $1 ":" 2`
+
+		if $is_appendix_registry
+		then 
+			matrix__append oo_stack $oos_index `starray__concat args __`
+		else 
+			((oos_index++))
+			matrix__push oo_stack $fs_p `starray__concat args __`
+		fi
+
+	elif $is_getter; then
+		# get the last entry 
+		# get the item from it 
+		#is__equal $oos_index_fsp $expected_oo_registry_fsp &&
+	fi
+
+	matrix__count oo_stack
+
+}
+
+
+foo(){
+	(( count++ ))
+	#echo ">> $(funcstack_str)"
+	is__equal $count 10 && return 0
+
+	local color=`oo color`
+	local size=`oo size`
+	#echo $color ---
+	#echo $size ----
+	oo adas adsda
+	oo inner color:yellow
+	foo
+}
+
+start(){
+	_/ color:blue shape
+	foo 
+}
+
+start
+
+
+
+
+
+
+#alias argx="echo \"-- \$@ ---\""
+#alias rx="is__equal \"\$fis\" \"y\" && is__equal \"\$_fsp\" \"\$(funcstack_str)\" && echo \"is_set\" || { echo \"setting\" && local fis=\"y\" && local _fsp=\"\$(funcstack_str)\" }"
+#alias rx1="__fsp_str=$"
+
+#alias argx=$(cat <<-END
+#	is__equal "$fis" "y" && { 
+#		is__equal "$_fsp" "$(funcstack_path)" && 
+#			echo "is_set" || 
+#			{ echo "setting" && 
+#				local fis="y" && 
+#				local _fsp="$(funcstack_path)" 
+#			}
+#		}
+#END
+#)
+
+# set new_funcstack_path
+# check if is_set is true 
+# check if is_set_funcstack_path is same as new_funcstack_path
+# if not set 
+
+
+

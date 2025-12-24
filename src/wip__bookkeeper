@@ -1,0 +1,11 @@
+#!/bin/zsh 
+
+# Central register tooling for hq-cli-util system data. Date is store in array variables named as private
+# Todo:
+# - Creates random variable names for it; (random prefixes)
+# - Saves the random prefixes
+# - Priamrily to avoid variables conflict
+
+bookkeeper__item_exists(){
+
+}

@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+source $HQ_ variable
+source $HQ_ is
+
+func1(){ echo ""}
+
+is__function func1 && echo "func1 is function" || echo "unreachable"
+is__function func2 && echo "unreachable" || echo "func2 isnt a function"
+

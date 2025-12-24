@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+# A lambda mechanism that allows one to invoke a function for every line of a 
+# file.
+
+# This way we can run a lambda on each line of a file instead of having to 
+# declare a function that encompasses the logic for reading a file.
+# - Particularly useful if the logic is objective 
+
+# This requires that a lambda mechanism is built. That can then interpret a
+# string and readdress it: for example pass values if does need to pass value, 
+# such that instead of passing the value directly it can be invoked later
+# - aggregation of value on a varaible is the problem here - for example a 
+# countter, that iterates on its value for every line
+
+# Note that this is not particular to file lines only, it can go through a 
+# dir and run a lambda for every file (name) and do actions with it.

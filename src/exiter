@@ -1,0 +1,35 @@
+#!/bin/zsh 
+
+
+exiter() {
+	local stack_i=2
+	# cl means caller1
+	local cl1=$funcstack[$stack_i]
+	local msg=""
+	local ps=$2
+	while [[ "$cl1" == *"ensure__"* ]] || 
+				[[ "$cl1" == *"ensure_not__"* ]] ||
+				[[ "$cl1" == *"wicked__"* ]] ||
+				[[ "$cl1" == *"variable__"* ]] ||
+				[[ "$cl1" == *"is__"* ]] ||
+				[[ "$cl1" == *"hq_aliased__"* ]]
+				; do
+		local cl4=$cl3
+		local cl3=$cl2
+		local cl2=$cl1
+		((stack_i++))
+		cl1=$funcstack[$stack_i]
+	done
+
+	# @todo:refactor - better msg when is root 
+	if [ -z $cl2 ]; then msg="[(root )/$cl1]"
+	elif [ -z "$cl3" ]; then msg="[$cl1/$cl2]"
+	elif [ -z "$cl4" ]; then msg="[$cl1/$cl2/$cl3]" 
+	else msg="[$cl1/$cl2/$cl3/$cl4]"
+	fi 
+
+	[ ! -z $ps ] && ps="\n- $ps"
+	narrate $msg $1 $ps
+	exit 1
+}
+

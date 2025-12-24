@@ -23,3 +23,19 @@ is__equal "sam" "samee" &&
 is__bigger "1" "0" && 
 	success "As expected 1 is bigger than 0" ||
 	fail "on is bigger 1 0"
+
+# isnt__
+
+isnt__equal "1" "0" &&
+	success "1 and 0 are indeed not equal" ||
+	fail
+
+# is_return__
+
+is_return__false `is__equal 1 0` && 
+	success "Since 'is__equal 0 1' returns false" ||
+	fail 
+
+is_return__true `is__equal 0 0` && 
+	success "Since 'is__equal 1 1' returns true" ||
+	fail 

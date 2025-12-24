@@ -1,19 +1,33 @@
 #!/bin/zsh
 
-# Routine session variables: such that files that have been imported already 
-# won't be included again. 
+# @caution 
+# - This is a critical file of hq-cli-util importer, thereof of the whole. 
+# - Please, have extra caution while edting and commenting this code.
+#
+
+# Runtime session variables: such that scripts won't imported twice 
 [ -z "$hq_imprtd_sssn" ] && local hq_imprtd_sssn=""
 [ -z "$hq_imprtd_cnt" ] && local hq_imprtd_cnt=1 || (( hq_imprtd_cnt+=1 )) 
 
-# Set package name, since it's not easily inferred once this file is called 
-# @todo:reevaluate - latest implemenations made this redundant?
+# Set package name, since it's not easily found/inferred when file is called 
+# - @todo:reevaluate - latest implemenations made this redundant?
 local _name="hq-cli-util"
 
-# Set the file to be sourced path: part of HQ_IMPORTER file path and desired 
-# suffix 
+# Loads aliases if $hq_imprtd_aliases isn't set
+# - Critical since aliases are not shared downstream to imported scripts 
+# - @todo:assess - if it's a reliable solution.
+if [[ -z "$hq_imprtd_aliases" ]]
+then 
+	local hq_imprtd_aliases="set"
+	source  "${HQ_IMPORTER%/$_name/*}/$_name/src/_aliases"
+fi
+
+# Set the path for file to be sourced: part HQ_IMPORTER path and suffix 
 local _path="${HQ_IMPORTER%/$_name/*}/$_name/src/$1"
 if [[ $hq_imprtd_sssn != *$_path* ]]; then
+	# echo "[importer] $_path" >/dev/tty
 	hq_imprtd_sssn+=" $_path"
+	# @todo - explain why shift 
 	shift
 	source "$_path"
 fi

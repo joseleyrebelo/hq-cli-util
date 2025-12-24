@@ -1,15 +1,148 @@
 #!/bin/zsh
 
 source $HQ_IMPORTER is
+source $HQ_IMPORTER narrate
+source $HQ_IMPORTER exiter
+source $HQ_IMPORTER array
 
 success() {
 	local msg=""
 	$(is__set $1) && msg=" - $1"
-	echo "Test success$msg" 
+	narrate "Test success$msg"
 }
 
 fail() {
 	local msg=""
 	$(is__set $1) && msg=" - $1"
-	echo "Test failed$msg" 
+	narrate "Test failed$msg"
 }
+
+local count_print_i=0
+count_print() {
+	((count_print_i++))
+	narrate "Count print: $count_print_i."
+}
+
+
+#---------------------------------------------------------#
+#---------------------------------------------------------#
+
+@context() {
+
+}
+
+
+#typeset -A private_bookkeeper__temp_files
+#@temp() {
+#	case "$1" in
+#		file) 
+#			touch 
+#}
+
+@__temp_file_exists(){
+	[[ -n $private_bookkeeper__temp_files[$1] ]] && 
+		return 0 ||
+		return 1
+}
+
+
+typeset -A private_bookkeeper__supplements
+
+@__supplement_exists(){
+	[[ -n $private_bookkeeper__supplements[$1] ]] && 
+		return 0 ||
+		return 1
+}
+@__supplement_type(){
+	echo $private_bookkeeper__supplements[$1]
+}
+
+
+@supplement() {
+	@__supplement_exists $2 &&
+		exiter "Supplement $2 already exists has type `@__supplement_type $2`"
+
+	case "$1" in
+		int)
+			private_bookkeeper__supplements[$2]="integer"
+			typeset -i supplement__$2
+			;;																																					 
+		*)
+			;;																																						
+	esac
+}
+
+@expression() {
+	local expr=$1
+	local target=$2
+	local captr_pos=""
+	local captr_val=""
+	local captr_rule=""
+	typeset -A captr_ruleset
+	captr_starters=("$")
+	matrix captr
+	use captr_ruleset[$]=varname
+	
+	# captr_..[$_style1]= 
+	# - style1 is a union item from "@custom"
+	# - "@custom" is an union: style1, style2, style3
+	# - union is allowed as a string_is par; avaliated as union istead of regex
+	# - union is an alias create programmatically
+	# - correspoding to use_union bookkeeper__unions 1
+	# # captr_ruleset[type]=varname
+	# Loop through expression string 
+	for i in {0..${#expr}}; do
+		local loop_char=${expr:$i:1}
+		echo $i $loop_char
+
+		# Interpretor loop, 1st if-clause
+		# - Only apply if capture is enabled (if captr_rule value isnt "")
+		if [[ "$captr_rule" != "" ]]; then
+			# # declare -p
+			# Check that $loop_char (still) complies with captr_rule (regex).
+			# - It continues to concatenate into captr_val as long as it complies; 
+			if string_is $captr_ruleset[$captr_rule] $loop_char; then
+				captr_val+=$loop_char
+			# If it doesn't comply 
+			else
+				# Ensures captured value is not empty (checks if string size is 0)
+				is__equal ${#captr_val} 0 && 
+					exiter "Wrong \"$captr_rule\" syntax at $captr_pos: empty value!"
+
+				if is__equal $captr_rule "$"; then
+					# Found a supplement match
+					@__supplement_exists $captr_val &&
+						echo "Yeeeah! supplement found!" ||
+						exiter "Supplement $captr_val not found but is required"
+
+					captr_rule=""
+					# Resets capture rule (previously named lever)
+				fi
+			fi
+		fi
+		
+		# Interpretor-loop, 2nd if clause 
+		# @todo:refactor - confirm that its checking if array_key call is valid 
+		# instead of checking _starters against all the cpatr_startes possibilities  
+		if array__has captr_starters "$loop_char"; then 
+			narrate "captr enabled"
+			captr_rule="$loop_char"
+			captr_pos=$i
+			captr_val=""
+		fi
+	done
+
+	if [[ "$captr_rule" != "" ]]; then 
+		echo $captr_val "<< finished"
+	fi
+}
+
+@returns () {
+}
+				
+weird_func () {
+	if [[ $1 == "a" ]];then echo "max";
+	elif [[ $1 == "b" ]]; then echo 234;
+	fi
+}
+

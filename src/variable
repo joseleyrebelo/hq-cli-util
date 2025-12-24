@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+source $HQ_ relay
+source $HQ_ wicked
+
+variable__value(){
+	is__variable $1 &&
+		{
+			relay "${(P)1}" &&
+			return 0
+		} ||
+		return 1
+}
+
+variable__get_type() {
+	wicked__variable__get_type $@
+}

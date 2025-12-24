@@ -1,0 +1,23 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER regex
+
+# regex (sed flavour) has 14 private chars
+local PRIV_REGEX_CHARS='\ / ^ $ * + ? . ( ) | { } [ ]'
+local PRIV_REGEX_CHARS_ESCAPED='\\\ \/ \^ \$ \* \+ \? \. \( \) \| \{ \} \[ \]'
+
+echo $(regex__escape $PRIV_REGEX_CHARS)
+echo $PRIV_REGEX_CHARS_ESCAPED
+
+is__equal "$(regex__escape $PRIV_REGEX_CHARS)" "$PRIV_REGEX_CHARS_ESCAPED" &&
+	success "full regex escaping result is correct" ||
+	fail "full regex escaping result is incorrect"
+
+is__equal "$(regex__escape '\ /')" '\\\ \/' &&
+	success "simple regex escaping result is correct" ||
+	fail "simple regex escaping result is incorrect"
+
+
+#a__\s.*
+#__match

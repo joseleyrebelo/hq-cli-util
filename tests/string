@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER string
+
+echo "$(string__trim_post "test/test" "test")" 
+
+is__equal "$(string__trim_post "test/test" "test")" "test" &&
+	success "As expected \"/\" onwards gets trimmed" || 
+	fail
+
+

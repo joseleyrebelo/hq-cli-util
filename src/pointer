@@ -1,0 +1,13 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER narrate
+
+pointer__value(){
+	narrate  "--pointer varname received $@"
+	is__pointer $1 &&
+		{
+			echo "${(P)1}" &&
+			return 0
+		} ||
+		return 1
+}

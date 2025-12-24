@@ -2,10 +2,82 @@
 
 source $HQ_IMPORTER system
 source $HQ_IMPORTER utter
+source $HQ_IMPORTER exiter
+source $HQ_IMPORTER ensure
 
 string__contains() {
 	[[ $1 == *$2* ]] &&	return 0 || return 1
 }
+
+typeset -A string_is__queries
+string_is__queries[num]="^[0-9]*$"
+string_is__queries[alphanum]="^[a-zA-Z0-9]*$"
+string_is__queries[alphanum_und]="^[a-zA-Z0-9_]*$"
+string_is__queries[varname]=$string_is__queries[alphanum_und]
+string_is__queries[alphanum_und_hyp]="^[a-zA-Z0-9_-]*$"
+
+string_is() {
+	local rgx_query=$string_is__queries[$1] 
+	# @todo:refactor/
+	ensure_not__empty "$rgx_query" "There's no string_is validator \"$1\""
+
+	[[ $2 =~ $rgx_query ]] && return 0 || return 1
+}
+
+string__replace(){
+	ensure__n_args 3
+	ensure__variable $1
+
+	echo ${(P)${1}//${2}/${3}}
+}
+
+string_isnt() {
+	string_is $@ && return 1 || return 0
+}
+
+# @todo:refactor/assess - very limited implemetation
+# - should return a split array instead
+# - split by delimiter should be more than 2 parts 
+# - create functions such as 
+# - - string__split_count - returns amount of items split
+# - - string__split_item - return item as per index arg provided; 
+# - - !! - all functions accept a string to be splitted; acts differently if this 
+# string is not provided.
+
+string__split() {
+	ensure__min_args 3
+	local text=$1
+	local delimiter=$2
+	local part=$3
+	# Is backwards flag enable the search for the splpit delimiter to start from 
+	# the end of the string, last character backwards, instead of the first letter
+  # onwards. 
+	local is_backwards=false 
+	[[ -n $4 ]] && is_backwards=$4 
+	
+	string__contains $1 $2 ||
+		# @todo:evaluate - should it fail if it can't split a string ?
+		return 1
+
+	is__bigger $part 2 && 
+		# @todo:refactor/improve 
+		exiter "Error in string__split, there's only part 1 and 2."
+
+	$is_backwards && 
+	{
+		is__equal $part 1 && 
+			echo "${text%$delimiter*}" || 
+			echo "${text##*$delimiter}" 
+	} || { 
+		is__equal $part 1 &&
+			echo "${text%%$delimiter*}" ||
+			echo "${text#*$delimiter}"
+	}
+
+	return 0
+		
+}
+
 
 
 string__trim_post() {
@@ -34,9 +106,9 @@ string__trim_post() {
   fi
 }
 
-# Todo - make use of zsh/bash string substitution 
+# @todo - make use of zsh/bash string substitution 
 string__trim_pre() {
-	ensure__min_args 1 $@
+	ensure__min_args 1
   local text=$1
   local search=" " && [[ $2 ]] && search=$2
   local search_length=${#search}
@@ -78,4 +150,13 @@ string__dequote() {
 	utter $text
 	return 0
 }
+
+string__slice() {
+	# @todo make it access pointer??
+	
+}
+
+
+
+
 

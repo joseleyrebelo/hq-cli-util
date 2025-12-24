@@ -28,3 +28,8 @@ $ () {
 	# Todo check if variable exists before trying to get infered values 
 	# Throw error if not
 }
+
+use_lib () {
+
+	
+}

@@ -1,0 +1,35 @@
+#!/bin/zsh
+
+source $HQ_ is
+source $HQ_ exiter
+
+# Using a more complex take on ${0:A:h} since ${0} inside functions does not 
+# return correct file and dir info.
+
+alias this__file_path="echo \${\${(%):-%x}:A}" 
+# * Expanding to file name to path with "{__:A}"
+ 
+alias this__file_name="echo \${\${(%):-%x}##*/}"
+# * Dropping relative paths "../folder" with "##*/" (removes everything after /)
+
+alias this__dir="echo \${\${(%):-%x}:A:h}"
+alias this__dir_name="echo \$(basename \${\${(%):-%x}:A:h})"
+
+alias this__func_path="is__function \$0 && echo \"\$(this__file_path):\$0\" || exiter \"This is not a function\""
+
+alias this__func_name="is__function \$0 && echo \"\$0\" || exiter \"This is not a function\""
+
+this__pwd(){
+	# @todo:evaluate - return 0? pwd always work?
+	echo $(pwd)
+	return 0
+}
+
+this__pwd_name(){
+	echo $(basename $(pwd))
+	return 0
+}
+
+
+
+

@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER pointer
+
+local primary_value="blue"
+local secondary_value="yellow"
+
+local a_pointer="secondary_value"
+
+pointer__value $a_pointer
+
+is__equal "$(pointer__value $a_pointer)" "blue" &&
+	success "Pointer value is \"blue\"" ||
+	fail
+
+	

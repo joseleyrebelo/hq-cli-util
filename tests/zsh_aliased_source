@@ -1,0 +1,9 @@
+alias custom_source="source "
+
+custom_source _hello
+
+hello
+
+#source ~/.profile
+
+

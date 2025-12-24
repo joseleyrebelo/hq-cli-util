@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+source $HQ_ string
+
+# @todo:commentary - improve  
+# @todo:coverage 
+# - incorrect args number 
+# - ...  
+
+local initial="0--0"
+
+string__replace initial 0 1
+
+

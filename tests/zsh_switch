@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+var="welcome"
+
+case "$var" in
+	welcome)
+		echo "hello, welcome back"
+		;;																																												 
+	*)
+		;;																																												
+esac

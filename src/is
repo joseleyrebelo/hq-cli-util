@@ -1,30 +1,59 @@
 #!/bin/zsh
 
-# IS (1/2)
+source $HQ_IMPORTER system
+source $HQ_IMPORTER exiter
+source $HQ_IMPORTER variable
 
-is__set(){
-	[[ "$1" != "" ]] && return 0 || return 1
-}
+# :: is 
+
+is__set(){ [[ "$1" != "" ]] && return 0 || return 1 }
 
 is__equal() {
-	ensure__n_args 2 $@
-	[[ "$1" == "$2" ]] && return 0 || return 1
+	[[ $# -gt 2 ]] && echo "Error: is__equal only accepts two args" && exit
+	[[ "${~1}" == "${~2}" ]] && return 0 || return 1
 }
 
-is__bigger() {
-	[[ $1 -gt $2 ]] && return 0 || return 1
+is__encloser() { 
+	# Note: this replicates string__contains
+	# @todo:evaluate - name - body_of/body_for
+	[[ $1 == *$2* ]] &&	return 0 || return 1 
 }
 
-is__file() {
-	[[ -f $1 ]] && return 0 || return 1
+is__bigger() { [[ $1 -gt $2 ]] && return 0 || return 1 }
+
+is__smaller() { [[ $1 -lt $2 ]] && return 0 || return 1 }
+
+is__equal_or_bigger() { [[ $1 -ge $2 ]] && return 0 || return 1 }
+
+is__equal_or_smaller() { [[ $1 -le $2 ]] && return 0 || return 1 }
+
+is__true() { [[ ${(P)1} == "true" ]] && return 0 || return 1 }
+
+is__false() { [[ ${(P)1} == "false" ]] && return 0 || return 1 }
+
+is__file() { [[ -f $1 ]] && return 0 || return 1 }
+
+is__dir() { [ -d $1 ]] && return 0 || return 1 }
+
+is__function() { typeset -f $1 > /dev/null && return 0 || return 1 }
+
+is__variable() {
+	# Assert that variable has been declared: check for its type.
+	[[ `variable__get_type $1` != "" ]] && return 0 || return 1
 }
 
-is__dir(){
-	[[ -d $1 ]] && return 0 || return 1
-}
+# @todo:evaluate - seems never usable
+is__pointer() { return `is__variable ${(P)1}` }
 
 
-is__n_args() {
+# :: is_return__ 
+
+is_return__false() { [[ $? -eq 1 ]] && return 0 || return 1 }
+
+is_return__true() { [[ $? -eq 0 ]] && return 0 || return 1  }
+
+hq_aliased__is__n_args() {
+	# @todo:implement - hq aliased
 	# This is a readability and dry-helper function, it's not
 	# optimized for performance. Approached from a bash utilitarian
 	# priciple. Please note:
@@ -41,30 +70,47 @@ is__n_args() {
 	# this instance.
 }
 
-is__min_args() {
-	local target=$1
-	local args_n=$(( $# - 1 ))
-	[ $args_n -ge $1 ] && return 0 || return 1
+hq_aliased__is__min_args(){
+	[[ ! $# -eq 2 ]] &&
+		exiter "is__min_args[function] requires two args."
+	[ $1 -ge $2 ] && return 0 || return 1
 }
 
-is__args_n_range () {
-	#TAIL - create this function to connect to importer requirment
-	# - PRoceed to fix importer file to allow two args 
+is__args_n_range() {
+	# @todo:refactor/idea 
+	# - create this function to connect to importer requirement
+	# - Proceed to fix importer file to allow two args 
 	# >> Perhaps you want a min type situation instead of a set range ??
-	# - - The idea here seems to be to limit the max of args as a performance matter ?? Overkill ?
-	# - -  This applies well to importer because it should inform the user of the importer if unnecessary args are added.
-	# - inally this will allow importer to import misc/general to hqconf (requiring system__echo_or_not )
-	# - this cause currently running "yarnlocal react-spots" in react-froms causes issues
+	# - - The idea here seems to be to limit the max of args as a performance 
+	# matter ?? Overkill ?
+	# - -  This applies well to importer because it should inform the user of the 
+	# importer if unnecessary args are added.
+	# - inally this will allow importer to import misc/general to hqconf 
+	# (requiring system__echo_or_not )
+	# - this cause currently running "yarnlocal react-spots" in react-froms
+	# causes issues
+	echo "is__args_n_range is not implemented" && exit 
 }
 
-# ISN'T - Negation of previos is_... functions 
 
-isnt__n_args() {
-	is__n_args "$@"; (( $? )) && return 1 || return 0
-}
+# :: isnt__  (negation of is__ set of function)
 
-isnt__min_args() {
-	is__min_args "$@"; (( $? )) && return 1 || return 0
-}
+isnt__equal() { is__equal $@ && return 1 || return 0 }
+
+isnt__equal_or_bigger() { is__equal_or_bigger $@ && return 1 || return 0 }
+
+isnt__equal_or_smaller() { is__equal_or_smaller $@ && return 1 || return 0 }
+
+isnt__variable() { is__variable $@ && return 1 || return 0 }
+
+isnt__pointer() { is__pointer $@ && return 1 || return 0 }
+
+hq_aliased__isnt__n_args(){ return `isnt__equal $1 $2` }
+
+hq_aliased__isnt__min_args() { return `isnt__equal_or_bigger $1 $2` }
+
+
+
+
 
 

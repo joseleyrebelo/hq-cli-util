@@ -16,10 +16,12 @@ narrate__color() {
 	NARRATE_COLOR__hlpr=$1
 }
 
-narrate() {
-	ensure__min_args 1 $@
+function narrate() {
+	#which ensure__min_args
+	#ensure__min_args 1
 	# Prints to screen buffer tty
-	$NARRATE_ENABLED__hlpr && echo "${NARRATE_COLOR__hlpr}$@${Color_Off}" >/dev/tty
+	$NARRATE_ENABLED__hlpr && 
+		echo "${NARRATE_COLOR__hlpr}$@${Color_Off}" >/dev/tty
 } 
 
 narrate__error_dump() {

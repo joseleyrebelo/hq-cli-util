@@ -1,0 +1,14 @@
+#!/bin/zsh
+
+
+local array=(one two three);
+for item in $array; do 
+	echo $item
+done 
+
+echo "-----"
+for item in ${array:0}; do 
+	echo $item 
+done
+
+

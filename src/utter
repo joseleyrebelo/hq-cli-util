@@ -1,5 +1,6 @@
 #!/bin/zsh
 
+# @todo:refactor/consolidate - relay vs utter
 utter () {
 	if [ "$1" = "$" ]; then 
 		echo $($1 "${@:2}")

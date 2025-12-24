@@ -1,6 +1,12 @@
 #!/bin/zsh
 
+# @deprecated
 error__not_implemented(){
 	echo "Error not implemented"
 	exit
 }
+
+dev__greetings() {
+	echo "Hi from dev"
+}
+

@@ -1,0 +1,27 @@
+#!/bin/zsh
+
+source _tooling
+source $HQ_IMPORTER is
+
+local empty=""
+
+func(){
+	echo $1
+}
+
+
+
+is__equal "`func "eligible"`" "eligible" &&
+	success "\`func \"eligible\"\` returns \"eligible\" string" ||
+	fail 
+
+is__equal "`func "" "eligible"`" "" &&
+	success "\`func \"\" \"eligible\"\` returns \"\" string" ||
+	fail 
+
+is__equal "`func $empty "eligible"`" "eligible" &&
+	success "\`func \$empty \"eligible\"\` returns \"\" string" ||
+	fail 
+
+
+

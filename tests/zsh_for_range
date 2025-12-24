@@ -1,0 +1,7 @@
+#!/bin/zsh
+
+items_n=10
+
+for item in {1..$items_n}; do
+	echo $item 
+done

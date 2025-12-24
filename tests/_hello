@@ -1,0 +1,3 @@
+hello() {
+	echo "Hello as well (hq-cli-util/tests)"
+}	

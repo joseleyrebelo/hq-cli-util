@@ -1,0 +1,10 @@
+#!/bin/zsh
+
+
+local array=(one two three);
+local aggregate=""
+for item in $array; do 
+	aggregate+=", $item"
+done 
+
+echo $aggregate

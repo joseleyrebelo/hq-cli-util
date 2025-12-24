@@ -1,0 +1,66 @@
+#!/bin/zsh
+
+#source $HQ_IMPORTER ensure
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER system
+source $HQ_IMPORTER returned
+
+
+typeset -a array 
+array=(
+	"" 
+	item 
+	"a sentence" 
+	1 
+)
+local color=yellow
+local value_test=0
+
+reader() {
+	echo "$@"
+}
+
+alias -g ops_simple="reader ops1"
+alias -g ops_complex="echo aliasing; cmd=(reader text text2); \${cmd[1]} \${cmd:1}"
+alias -g alias_set_val1="value_test=\"set by alias\""
+
+ensure::(){
+	echo ensure--
+}
+
+#ensure::
+#alias :min_args="\$#"
+
+testing_echo_sequence(){
+	echo "first"
+	ops_simple
+	ops_complex
+	echo "last"
+	echo $color
+}
+
+testing_value_set_sequence(){
+	value_test="set normally"
+	alias_set_val1
+	echo $value_test
+}
+
+
+#print -rl -- ${(k)aliases}
+#testing_value_set_sequence
+#system__aliased_name "__aliased__something" "asd" 2
+
+__is__min_args(){
+
+	returned__print `isnt__min_args 3`
+	#lreturn__print `isnt__min_args 3`
+	#is__min_args 4 && 
+		#echo "hi" || 
+		#echo "lol"
+}
+
+#__is__min_args x x x
+
+
+

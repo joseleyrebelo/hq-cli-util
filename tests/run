@@ -2,6 +2,8 @@
 
 source _tooling
 
+setopt aliases
+
 local IS_SINGLE_RUN=false 
 
 $(is__file $1) && IS_SINGLE_RUN=true 
@@ -9,6 +11,9 @@ $(is__file $1) && IS_SINGLE_RUN=true
 if $IS_SINGLE_RUN; then 
 	source $1
 else 
-	source is
-fi 
+	source _tail
+fi
+
+# @todo - implement cleanup function that deletes temp files
+#@cleanup 
 

@@ -1,0 +1,15 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER pointer
+source $HQ_IMPORTER matrix
+
+local example_item1=8
+local varname_basis="example_item"
+
+((${varname_basis}1++))
+echo `pointer__value example_item1`
+
+is__pointer varnamue_basis && echo "hi" || echo "bye"
+echo "${(t)example_item1} -not really" 
+matrix__new supper asdasdasd adasd asdasd 

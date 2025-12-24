@@ -1,0 +1,42 @@
+#!/bin/zsh
+
+# @todo:refactor/consolidate - create bookkeeper utility (wip__bookkeeper)
+typeset -A private_bookkeeper__unions
+
+_union() {
+	local id=`string__replace $1 "/" "-"`
+	if [[ -n $private_bookkeeper__unions[$id] ]]; then
+		# exiter "Union \"$1\" already exists"
+	else
+		local items_n=((args_n-1))
+		local alg_map="$items_n;"
+		local args_n=$#
+		local biggest_size=0
+
+		for item in ${@:2}; do 
+			# @todo:implement
+			# > save the size of each to an array
+			# > get the biggest item; will define the cycles on next loop
+			# - create a loop from 0 to biggest 
+			# - save the respective char from each item 
+			# - skip if loop index is bigger than the size of the item 
+			# - ...
+			# - use shift technique to remove items that are too big ... from the loop
+			# - create benchmark of optimization levels 
+			# - create timer tooling
+			(( item > biggest_size )) && biggest_size=$item
+			alg_map+="${#item},"
+		done 
+
+		for index in {1..$biggest_size}; do
+			alg_map+="${${@[1]}:$index:0}"
+			echo $index 
+		done
+		# @todo:refactor - avoid trailing "comma" from for
+		union_alg_map+=";"
+		
+		private_bookkeeper__unions[$id]="${id}__matrix_bookkeeper"
+		union test=
+}
+
+alias set_union="_union `this__func_path` test test test"

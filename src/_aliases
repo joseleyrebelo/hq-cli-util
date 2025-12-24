@@ -1,0 +1,22 @@
+#!/bin/zsh
+
+# This file contains hq-cli-util framework aliases. 
+# They are here congretated to ease custom importation and maintanability.
+# - "custom importation" refers to _importer component of hq-cli-util.
+# The custom importation addresses issues with alias expansion when "executing" 
+# files through source. 
+# - "expansion" refers to downstream access.
+#
+# Note that all aliases intended to be used as utility functions, are aliases
+# simple to ease readability/usability; often hiding more obscure zsh syntax. 
+
+alias -g is__n_args="hq_aliased__is__n_args \$# "
+alias -g is__min_args="hq_aliased__is__min_args \$# "
+alias -g isnt__n_args="hq_aliased__isnt__n_args \$# "
+alias -g isnt__min_args="hq_aliased__isnt__min_args \$# "
+alias -g ensure__n_args="hq_aliased__ensure__n_args \$# "
+alias -g ensure__min_args="hq_aliased__ensure__min_args \$# "
+
+# Maintenance rules:
+# - Functions to be aliased must start with "hq_alias__"; to keep hq-cli-util 
+# alias more searchable and upgradable.

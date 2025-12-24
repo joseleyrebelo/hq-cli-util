@@ -1,0 +1,25 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER string
+
+string_is num "00" && 
+	success "Value \"00\" is um " ||
+	fail 
+
+
+string_is alphanum "t00" && 
+	success "Value \"t00\" is alphanume " ||
+	fail 
+
+string_is alphanum_und "t00_" && 
+	success "Value \"t00\" is alphanum_und " ||
+	fail 
+
+
+# string_isnt 
+string_isnt alphanum "%%" && 
+	success "Value \"%%\" isn't alphanum " ||
+	fail 
+
+
+

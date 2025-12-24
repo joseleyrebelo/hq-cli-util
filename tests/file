@@ -1,0 +1,17 @@
+#!/bin/zsh
+
+hq_import file 
+source $HQ_ file
+source $HQ_ datetime
+
+# @todo @temp_file function creates file and registers to be deleted
+# - last opened datetime should match ??
+local filenm=_temp__file
+local target_content="Line and date:\n`datetime__now`"
+touch $filenm
+
+file__ensure_content $filenm "$target_content"
+
+is_return__true `file__has_content $filenm "$target_content"` &&
+	success ||
+	fail

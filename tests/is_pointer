@@ -1,0 +1,28 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER ensure
+source $HQ_IMPORTER returned
+source $HQ_IMPORTER wicked
+
+local variable_pointed_to=(asda asdasd)
+local pointer_variable="variable_pointed_to"
+
+
+#[[ "${(P)pointer_variable}" == "" ]] && echo "nothing" || echo "something"#
+
+#is__pointer "asdasd"
+#returned__print
+
+#echo "${(t)variable_pointed_to}"
+#echo "${(t)pointer_variable}"
+
+#echo `wicked__variable__get_type variable_pointed_to`
+
+is__pointer pointer_variable &&
+	success "Is pointer indeed!" ||
+	fail
+
+isnt__pointer not_pointer_variable &&
+	success "Is not a pointer" ||
+	fail

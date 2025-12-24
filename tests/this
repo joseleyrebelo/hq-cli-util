@@ -1,0 +1,55 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER string
+source $HQ_IMPORTER this
+
+local PKG_NAME="hq-cli-util"
+
+func(){
+	echo -----
+	this__func_path
+	echo -----
+	this__file_path
+	this__file_name
+	this__dir 
+	this__dir_name
+	echo -----
+}	
+
+
+#this__func_path
+
+func
+
+
+is__encloser $(this__file_path) "$PKG_NAME/tests/this" && 
+	success "As this__file_path \"...\" contains \"$PKG_NAME/tests/this\"" || 
+	fail
+
+is__equal $(this__file_name) "this"  && 
+	success "As this__file_name \"$(this__file_name)\" is \"this\"" || 
+	fail
+
+
+is__encloser $(this__dir) "$PKG_NAME/tests" && 
+	success "As this__dir \"$(this__dir)\" contains \"$PKG_NAME/tests\"" || 
+	fail
+
+is__equal $(this__dir_name) "tests"  && 
+	success "As this__dir_name \"$(this__dir_name)\" is \"tests\"" || 
+	fail
+
+# 1. Ensure the pwd is this files folder 
+# 2. Change working-directory, make a stronger case for pwd tests 
+cd "$(this__dir)"
+cd ../
+
+is__encloser $(this__pwd) "$PKG_NAME" && 
+	success "As this__pwd \"$(this__pwd)\" contains \"$PKG_NAME\"" || 
+	fail
+
+is__equal $(this__pwd_name) "$PKG_NAME"  && 
+	success "As this__pwd_name \"$(this__pwd_name)\" is \"$PKG_NAME\"" || 
+	fail
+
+

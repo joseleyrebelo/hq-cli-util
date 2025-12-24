@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER matrix
+source $HQ_IMPORTER wicked
+
+
+matrix__new neo name Unknown
+
+matrix__push neo surname Unknown
+
+matrix__get neo
+

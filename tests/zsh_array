@@ -1,0 +1,33 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER array
+
+typeset -a array 
+array=(
+	one 
+	two 
+	three 
+)
+
+
+is__equal "${array[1]}" "one" &&
+	success "As expected item 1 of array is \"one\"" ||
+	fail 
+
+isnt__equal "${array[1]}" "two" &&
+	success "As expected item 1 of array is not \"two\"" ||
+	fail 
+
+is__equal "${array[-1]}" "three" &&
+	success "As expected item -1 of array is \"three\"" ||
+	fail 
+
+# Array push 
+array__push	array four
+is__equal "${array[-1]}" "four" &&
+	success "After array push, item -1 of array is \"four\"" ||
+	fail 
+
+
+

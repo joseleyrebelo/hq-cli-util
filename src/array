@@ -1,6 +1,12 @@
 #!/bin/zsh
 
-array__concat() {
+source $HQ_IMPORTER ensure
+source $HQ_IMPORTER wicked
+source $HQ_IMPORTER variable
+source $HQ_IMPORTER narrate
+source $HQ_IMPORTER relay
+
+array__padding() {
 	local array=(${(P)1})
 	for value in "${array[@]}"
 	do
@@ -8,7 +14,58 @@ array__concat() {
 	done
 }
 
-array__size() {
+array__concat(){
+	# @todo:refactor - this is not the correct implementation of concat
+	# - rename from concat if the implementation is correct
+	ensure__min_args 2
 	local array=(${(P)1})
-	echo ${#array[@]}
+	local isnt_first=false
+	for value in "${array[@]}"; do
+		$isnt_first && printf "%s" "$2" || isnt_first=true
+		printf "%s" "$value"
+	done
 }
+
+array__size(){
+	# @todo:refactor - use wicked instead ??
+	local array=(${(P)1})
+	relay ${#array[@]}
+}
+
+array__push() { wicked__array__push $@ }
+
+array__get() { relay "${(P)1}" }
+
+array__get_item() { wicked__array__get_item $1 $2 }
+
+array__new() {
+	ensure__str_format varname $1
+	ensure_not__pointer $1
+	typeset -ag $1
+	# - create array in the global scope
+
+	is__bigger $# 1 && array__push $@
+}
+
+
+array__has() {
+	ensure__n_args 2
+	ensure__variable $1
+	local array=(${(P)1})
+	local item=""
+	local has=1 
+	# - 1 for false
+
+	for item in $array; do 
+		is__equal $item $2 && has=0		
+	done
+	return $has
+}
+
+associative_array__new() {
+	ensure__str_format varname $1
+	ensure_not__pointer $1
+
+	typeset -A $1
+}
+

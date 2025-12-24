@@ -1,0 +1,29 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER system
+
+local qry_excludes="--exclude-dir={'node_modules','dist'} --exclude=yarn.lock"
+
+grep__string() {
+	grep -rni "$(regex__escape $1)" * $qry_excludes
+	return $?
+}
+
+grep__multiline() {
+	local starray=$(regex__escape $@)
+	local qry_search=$(starray__concat starray '\n')
+	grep -Pzrni "$qry_search" * $qry_excludes
+	return $?
+	
+	# @todo:document escaping the slash behaviour
+	# - relates to regex__escape 
+	# - Does it have something to do with it being \s
+	# echo "$query"
+	# printf "%s" "$query"
+	# echo grep -Pzrni "#a__\\\s\.\*\n#__match"
+}
+
+grep__regex() {
+	# This does not escape the target search value 
+	system__not_implemented
+}

@@ -2,8 +2,26 @@
 
 source $HQ_IMPORTER ensure
 source $HQ_IMPORTER narrate
+source $HQ_IMPORTER string
 source $HQ_IMPORTER utter
 
+system__not_implemented(){
+	echo "Error: Functionality not implemented"
+	exit
+}
+
+system__print() {
+	narrate "[${funcstack[2]}[print]] \"$@\""
+}
+
+system__print_return() {
+	narrate "[${funcstack[2]}[return]] $?"
+}
+
+
+system__aliased_name() {
+	string__split $1 "hq_aliased__" 2
+}
 
 # Todo - deprecate 
 system__illegal_args () { printf '\U26A1\U26A1\tIllegal arguments'; }

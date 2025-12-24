@@ -1,0 +1,29 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER string
+
+local escaped_quote="Quote \\\"."
+is__equal "${escaped_quote//\\\"/\"}" "Quote \"." &&
+	success "Removes backward slash from \\\"." || fail
+
+local delimiter="\"\""
+local value="start\"\"double-quoted text\"\"end"
+
+echo "${value%$delimiter*} -- % *"
+echo "${value%%$delimiter*} -- %% *"
+echo "${value#*$delimiter} -- # *"
+echo "${value##*$delimiter} -- ## *"
+
+string__split $value "\"\"" 1 
+string__split $value "\"\"" 2
+
+oo last string__split $value "\"\"" 1 true
+string__split $value "\"\"" 2 true
+
+#echo "${value%%"*}"
+#echo "${value%"}"
+
+#is__equal "${value%"}" "\"\"double-quoted text\"" &&
+	#success "Removes the last quote." || fail 
+

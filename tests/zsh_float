@@ -1,0 +1,6 @@
+#!/bin/zsh
+
+echo "Not finished"
+
+local float numb=asda
+echo $numb

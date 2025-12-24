@@ -1,0 +1,5 @@
+#!/bin/zsh
+
+local example_string="test"
+
+echo "String size ${#example_string}!"

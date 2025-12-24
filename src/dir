@@ -1,13 +1,25 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER _dev
+source $HQ_IMPORTER system
 source $HQ_IMPORTER array
+source $HQ_IMPORTER ensure
 
 dir__was_changed(){
-	error__not_implemented
+	system__not_implemented
 }
 
-# @todo:coverage test for directories with spaces.
+dir__name(){
+	ensure__n_args 1 $@
+	local name=
+	local result=
+	name=$(basename "$1")
+	result=$?
+
+	echo $name
+	return $result
+}
+
+# @todo:coverage - test for directories with spaces.
 dir__changed_files(){
 	local saved_dir=$(pwd)
 	local target_dir=$1

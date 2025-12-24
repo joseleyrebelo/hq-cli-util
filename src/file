@@ -63,8 +63,24 @@ file__query_line(){
 	return $? 
 }
 
-# TODO - refactor - use __query_line instead
+# @todo:refactor:possibly - use __query_line instead
 file__get_match_line() {
   local match_line=$(grep -n $1 $2 | cut -d : -f 1)
   [ -z "$match_line" ] && echo "-1" || echo $match_line
+}
+
+
+file__has_content() {
+	ensure__n_args 2
+	local file=$1
+	local content=$2
+	grep -Prnqz "$content" "$file" 
+	return $?
+}
+
+file__ensure_content() {
+	# $1 (file); $2 (content).
+	# Writes $content on $profile if $content value is not found on profile
+	# @todo:evaluate - Ensure is secure and efficient way of appending to file 
+	file__has_content "$1" "$2" || echo "\n$2\n" >>"$1"
 }

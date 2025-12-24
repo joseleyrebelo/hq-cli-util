@@ -1,0 +1,9 @@
+#!/bin/zsh
+
+echo $HQ_CLI_VERSION
+
+dev__greetings
+ 
+hq_import _dev
+
+dev__greetings

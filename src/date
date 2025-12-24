@@ -1,5 +1,7 @@
 #!/bin/zsh
 
+# Maintenance rules:
+#
 # All utility functions in this file relate solely to date; no time related
 # logic or results. The sibling "datetime" utility file is your want if so.
 # Alternatevily make use of the "time" utility file.

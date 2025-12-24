@@ -1,10 +1,13 @@
 #!/bin/zsh
 
+source $HQ_IMPORTER ensure
+
+
 # TODO make it into __get <line> <word>
 #TODO use hqconf connect like to strray (keeps a value in memory) 
 # - starray variable = something
 starray__word(){
-	ensure__min_args 2 "$@"
+	ensure__min_args 2
 	local delim=" " && [ ! -z $3 ] && delim=$3
 	local word=$(cut -d $delim -f $1 <<< $2)
 	[ ! -z $word ] && echo $word
@@ -12,9 +15,29 @@ starray__word(){
 }
 
 starray__query_line(){
-	ensure__n_args 2 "$@"
+	ensure__n_args 2
 	local line=$(echo $2 | grep $1 -m1)
 	[ ! -z $line ] && echo $line
 	return $?
+}
+
+starray__padding() {
+	ensure__min_args 2 $@
+	local starray=${(P)1}
+	for value in "${=starray}"
+	do
+		printf "%s%s%s " "$2" "$value" "$3"
+	done
+}
+
+starray__concat(){
+	ensure__min_args 2 $@
+	local starray=${(P)1}
+	local isnt_first=false
+	for value in "${=starray}"
+	do 
+		$isnt_first && printf "%s" "$2" || isnt_first=true
+		printf "%s" "$value"
+	done
 }
 

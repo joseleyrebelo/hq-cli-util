@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER is
+source $HQ_IMPORTER dir
+
+is__equal $(dir__name) "tests" && 
+	success "As expected dir__name of \$(pwd) is tests" || 
+	fail
+
+is__equal $(dir__name "africa/gambia") "gambia"  && 
+	success "As expected dir__name of \"africa/gambia\" is gambia" || 
+	fail

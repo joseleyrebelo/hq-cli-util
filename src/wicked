@@ -1,0 +1,73 @@
+#!/bin/zsh
+
+source $HQ_IMPORTER exiter
+source $HQ_IMPORTER pointer
+source $HQ_IMPORTER string
+source $HQ_IMPORTER returned
+source $HQ_IMPORTER system
+
+wicked__array__validate_eval__name() {
+	string_isnt alphanum_und_hyp $1 &&
+		exiter "Error: array name \"$1\" must be alpha_numeric_underscore_hyphen" 
+}
+
+wicked__array__validate_eval__value() {
+	# @todo:refactor/consolidate - checking for jail breaking/quotes before eval
+	# @todo:refactor/consolidate - exit codes/implementation 
+	string__contains $1 \" && 
+		exiter "Error: invalid value \"$1\" to push to array \"$1\"" 
+	
+	# @todo:refactor/evaluate - should equal be refrained from use?
+	# - what else should be 
+	string__contains $1 "=" && 
+		exiter "Error: invalid value \"$1\" to push to array $1; \"=\" not permitted " 
+
+}
+
+wicked__variable__get_type() {
+	string_isnt varname $1 &&
+		exiter "Error: variable name \"$1\" is not valid."
+	
+	eval "echo \${(t)$1}"
+}
+
+
+#---------------------------------------------------------#
+# array (normal)
+#---------------------------------------------------------#
+
+wicked__array__push() {
+	ensure__variable $1
+	ensure__min_args 2
+
+	wicked__array__validate_eval__name $1 
+	for item in ${@:2}; do 
+		# @todo:refactor - make error message be more specific to item
+		wicked__array__validate_eval__value $item
+	done
+
+	eval "$1+=(${@:2})"
+}
+
+wicked__array__get_item() {
+	# @todo:refactor - ensure its array instead of variable 
+	ensure__variable $1
+	ensure__n_args 2
+
+	wicked__array__validate_eval__name $1 
+	string_isnt num $2 &&
+		exiter "Error: array index must be numeric"
+	eval  "echo \${$1[$2]}"
+}
+
+#---------------------------------------------------------#
+# associative_array 
+#---------------------------------------------------------#
+
+wicked__associative_array__new() {
+	ensure__string_is alphanum_und $1
+	ensure_not__pointer $1
+
+	typeset -A $1
+}
+

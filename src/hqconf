@@ -4,30 +4,29 @@ source $HQ_IMPORTER system
 source $HQ_IMPORTER string
 
 hqconf () {
-	ensure__n_args 2 "$@"
-	# TODO - shouldn't have to fail ?? 
-	# - There are scenarios where u want to handle file not existing 
-	ensure__file $2 	
-	declare -g "$1=__hqconf__actions $2" 
-	# TODO important - ensure $? comes from ensure__file instead of echo 
+	ensure__n_args 2
+	# @todo:evaluate - scenarios where i required to handle file not existing?
+	ensure__file $2
+	declare -g "$1=__hqconf__actions $2"
+	# @todo - ensure $? comes from ensure__file instead
 	return $?
 }
 
 __hqconf__actions () {
-	ensure__min_args 3 $@
-	local ALLOWED_ACTIONS="add get" 
+	ensure__min_args 3
+	local ALLOWED_ACTIONS="add get"
 	# ::zsh:td-01
-	string__contains $2 $ALLOWED_ACTIONS 
-	if [[ $?==0 ]]; then 
+	string__contains $2 $ALLOWED_ACTIONS
+	if [[ $?==0 ]]; then
 		utter $(hqconf__$2 $1 ${@:3})
 		return $?
-	else 
+	else
 		return 1
 	fi
 }
 
 hqconf__add () {
-	ensure__min_args 3 $@
+	ensure__min_args 3
 	ensure__file $1
 	local line=$(hqconf__get_line $1 $2)
 	local sorted_entry=$(hqconf__format_config ${@:2})
@@ -35,22 +34,22 @@ hqconf__add () {
 		mv -f $1 $1.old
 		v="$sorted_entry" awk "NR==$line {\$0=ENVIRON[\"v\"]} 1" $1.old > $1
 		rm $1.old
-	else 
+	else
 		utter $sorted_entry >>$1
 	fi
 	return $?
 }
 
 hqconf__format_config () {
-	ensure__min_args 2 $@
-	local result="$1 :" 
+	ensure__min_args 2
+	local result="$1 :"
 	for val in "${@:2}"; do result+=" \"${val//\"/\\\\\"}\"" done
 	utter $result
-	# ::todo - return 
+	# ::todo - return
 }
 
 hqconf__get_line () {
-	ensure__min_args 2 $@
+	ensure__min_args 2
 	ensure__file $1
   utter $(v="$2 :" awk 'index($0, ENVIRON["v"])==1 {print NR}' $1)
 	return $?
@@ -59,10 +58,10 @@ hqconf__get_line () {
 hqconf__get () {
 	ensure__min_args 2 $@
 	ensure__file $1
-	
+
 	local OUT_OF_RANGE_ERROR="(hqconf) Error: query index is out of range"
 	local DELIMITER="\" \""
-  
+
 	local file=$1
   local config=$2
 	local target_i=1 && [[ ! -z $3 ]] && target_i=$3
@@ -73,7 +72,7 @@ hqconf__get () {
   	if [[ $? == 0 ]]; then
 			local AWK_CMD='{n=split($0, a, ENVIRON["d"]); print a[ENVIRON["i"]]";"n}'
 			local items_n=0
-			# Gets only the value from the matched line 
+			# Gets only the value from the matched line
 			local value=${result#*:}
 			# Queries for the target item from value
 			value=$(d=$DELIMITER i=$target_i awk $AWK_CMD <<< $value)
@@ -87,13 +86,13 @@ hqconf__get () {
 			value=$(string__trim $value)
 			# "De-escapes" quotes (returns quotes from escape)
 			value=${value//\\\"/\"}
-			# Removes prefix quote present on 1st item (if 1st is target)
-			[[ $target_i -eq 1 ]] && value=${value#\"} 
-			# Removes suffix quote present on last item first(if last is target)
+			# Removes prefix quote present on 1st item (if 1st is query target)
+			[[ $target_i -eq 1 ]] && value=${value#\"}
+			# Removes suffix quote present on last item first(if last is query target)
 			[[ $target_i -eq $items_n ]] && value=${value%\"}
 			# Returns value
 			utter $value
-			return 0 
+			return 0
     else
 			narrate "Line do not follow config syntax. \"${config}\""
       return 1
@@ -105,7 +104,7 @@ hqconf__get () {
 }
 
 hqconf__check_syntax() {
-  # TODO this echoing  technique could be pair with id specific  
+  # TODO this echoing  technique could be pair with id specific
 	# default being 1, and eg 99 being one specific function we are trying to run.
 	local echoing=0
   #(system__echo_or_not "$@")

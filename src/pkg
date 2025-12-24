@@ -1,55 +1,55 @@
 #!/bin/zsh
 
-hq_importer system
-hq_importer string
+source $HQ_IMPORTER system
+source $HQ_IMPORTER string
+source $HQ_IMPORTER dir
 
-pkg__register_sh_oneliner () {
-	# TODOc - abstract from other pkg__register_path
-}
+local HQ_CONST__PROFILE_PATH=~/.profile
+local HQ_CONST__ZPROFILE_PATH=~/.zprofile
+local HQ_CONST__BASHRC_PATH=~/.zprofile
+
 
 pkg__register_path() {
-	local DIR="${0:A:h}"
-	local LINE="export PATH=\"$DIR/bin:\$PATH\""
-	# TODOc - This can be run once and saved to be accessible via 
-	# system__ func .
-	local SHELL_TYPE=$(echo $0)
-
-	local PROFILE=~/.profile
-	# If on a zsh terminal, overwrites the target profile file 
-	if [[ $(string__contains $SHELL_TYPE "zsh") ]]; then 
-		PROFILE=~/.zprofile
-	fi
-
-	# Finally, inserts $PATH extender line on target profile file.
-	# TODOc - Ensure this is a secure way of adding these changes
-	# - There is a potential to instead source a file that would make
-	# this changes.
-	grep -qsFx "$LINE" "$PROFILE" || echo "\n$LINE\n" >>"$PROFILE"
+	__pkq__ensure_in_profile "export PATH=\"$(this__pwd)/bin:\$PATH\""
 }
 
+pkg__register_HQ_env () {
+	__pkq__ensure_in_profile "export HQ_=\"$HQ_IMPORTER\""
+}
 
-# @todo:promote - abstract such it accepts any LINE
+# @todo - deprecate for HQ_ instead?
 pkg__register_HQ_IMPORTER_env () {
-	local profile=~/.profile
-	local shell_type=$(echo $0)
-	local line="export HQ_IMPORTER=\"$HQ_IMPORTER\""
-	
-	# @todo:refactor/readability - if possible 
-	if [[ $(string__contains $shell_type "zsh") ]]; then 
-		profile=~/.zprofile
-	fi
+	__pkq__ensure_in_profile "export HQ_IMPORTER=\"$HQ_IMPORTER\""
+}
 
-	# Write $line on $profile if not found on grep
-	grep -qsFx "$line" "$profile" || echo "\n$line\n" >>"$profile"
+pkg__register_propmt_command(){
+}
+
+__pkg__ensure_in_profile(){
+	ensure__n_args 1
+	# @todo:required ensure zprofile, aborts if non existent 
+	# as it doesnt support bash...
+	# - ensure should/could cache existence of files?? if on sae call stack ish ??
+	local profile_file=$HQ_CONST__PROFILE_PATH
+	local shell_type=$(echo $0)
+
+	# If on a zsh terminal, overwrites the target zprofile file
+	string__contains $shell_type "zsh" && profile_file=$HQ_CONST__ZPROFILE_PATH
+
+	file__ensure_content profile_file $1
+}
+
+pkg__get_profile_path(){
+	
 }
 
 pkg__install(){
-				echo "in pkg__install"
+	echo "in pkg__install"
 	local BIN_FILE=bin/"${PWD##*/}"
 	echo $BIN_FILE
 	ensure__or_mkdir bin
-	touch $BIN_FILE 
-	echo "#!/bin/zsh" > $BIN_FILE 
+	touch $BIN_FILE
+	echo "#!/bin/zsh" > $BIN_FILE
 }
 
 #TODOc - Copied / Powerful / Complex
