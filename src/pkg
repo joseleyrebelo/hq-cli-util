@@ -1,8 +1,9 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER system
-source $HQ_IMPORTER string
-source $HQ_IMPORTER dir
+source $HQ_ system
+source $HQ_ file
+source $HQ_ string
+source $HQ_ dir
 
 local HQ_CONST__PROFILE_PATH=~/.profile
 local HQ_CONST__ZPROFILE_PATH=~/.zprofile
@@ -10,16 +11,16 @@ local HQ_CONST__BASHRC_PATH=~/.zprofile
 
 
 pkg__register_path() {
-	__pkq__ensure_in_profile "export PATH=\"$(this__pwd)/bin:\$PATH\""
+	__pkg__ensure_in_profile "export PATH=\"$(this__pwd)/bin:\$PATH\""
 }
 
 pkg__register_HQ_env () {
-	__pkq__ensure_in_profile "export HQ_=\"$HQ_IMPORTER\""
+	__pkg__ensure_in_profile "export HQ_=\"$HQ_IMPORTER\""
 }
 
 # @todo - deprecate for HQ_ instead?
 pkg__register_HQ_IMPORTER_env () {
-	__pkq__ensure_in_profile "export HQ_IMPORTER=\"$HQ_IMPORTER\""
+	__pkg__ensure_in_profile "export HQ_IMPORTER=\"$HQ_IMPORTER\""
 }
 
 pkg__register_propmt_command(){
@@ -36,7 +37,7 @@ __pkg__ensure_in_profile(){
 	# If on a zsh terminal, overwrites the target zprofile file
 	string__contains $shell_type "zsh" && profile_file=$HQ_CONST__ZPROFILE_PATH
 
-	file__ensure_content profile_file $1
+	file__ensure_content $profile_file $1
 }
 
 pkg__get_profile_path(){
