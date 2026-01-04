@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER narrate
+source $HQ_ narrate
 
 pointer__value(){
 	narrate  "--pointer varname received $@"

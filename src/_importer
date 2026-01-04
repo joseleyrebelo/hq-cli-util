@@ -19,11 +19,11 @@ local _name="hq-cli-util"
 if [[ -z "$hq_imprtd_aliases" ]]
 then 
 	local hq_imprtd_aliases="set"
-	source  "${HQ_IMPORTER%/$_name/*}/$_name/src/_aliases"
+	source  "${HQ_%/$_name/*}/$_name/src/_aliases"
 fi
 
 # Set the path for file to be sourced: part HQ_IMPORTER path and suffix 
-local _path="${HQ_IMPORTER%/$_name/*}/$_name/src/$1"
+local _path="${HQ_%/$_name/*}/$_name/src/$1"
 if [[ $hq_imprtd_sssn != *$_path* ]]; then
 	# echo "[importer] $_path" >/dev/tty
 	hq_imprtd_sssn+=" $_path"

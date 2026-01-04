@@ -1,7 +1,11 @@
 #!/bin/zsh
 
-HQ_="${0:A:h}/src/_importer"
-source src/pkg
+# This package only requires HQ_ environment variable to be set so far.
+# HQ_ stated below contains the path to this folder, and will allow other 
+# "packages" to import hq-cli-uil'ity files.
+# (Note that HQ_ was previously HQ_IMPORTER.)
 
+HQ_="${0:A:h}/src/_importer"
+source $HQ_ pkg
 pkg__register_HQ_env
-pkg__register_HQ_IMPORTER_env
+

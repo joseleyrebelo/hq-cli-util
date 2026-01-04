@@ -1,8 +1,8 @@
 #!/bin/zsh
 
 
-source $HQ_IMPORTER colors
-source $HQ_IMPORTER ensure
+source $HQ_ colors
+source $HQ_ ensure
 
 local NARRATE_ENABLED__hlpr=true
 local NARRATE_COLOR__hlpr=""

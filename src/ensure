@@ -1,7 +1,7 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER narrate
-source $HQ_IMPORTER is
+source $HQ_ narrate
+source $HQ_ is
 
 ensure__dependency() {
   type $1 >/dev/null 2>&1 || {

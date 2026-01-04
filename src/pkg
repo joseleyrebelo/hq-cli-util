@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-source $HQ_ system
+#source $HQ_ system
 source $HQ_ file
 source $HQ_ string
 source $HQ_ dir
@@ -15,16 +15,16 @@ pkg__register_path() {
 }
 
 pkg__register_HQ_env () {
-	__pkg__ensure_in_profile "export HQ_=\"$HQ_IMPORTER\""
+	__pkg__ensure_in_profile "export HQ_=\"$HQ_\""
 }
 
 # @todo - deprecate for HQ_ instead?
 pkg__register_HQ_IMPORTER_env () {
-	__pkg__ensure_in_profile "export HQ_IMPORTER=\"$HQ_IMPORTER\""
+	__pkg__ensure_in_profile "export HQ_IMPORTER=\"$HQ_\""
 }
 
-pkg__register_propmt_command(){
-}
+#pkg__register_propmt_command(){
+#}
 
 __pkg__ensure_in_profile(){
 	ensure__n_args 1
@@ -40,18 +40,20 @@ __pkg__ensure_in_profile(){
 	file__ensure_content $profile_file $1
 }
 
-pkg__get_profile_path(){
+#pkg__get_profile_path(){
 	
-}
+#}
 
-pkg__install(){
-	echo "in pkg__install"
-	local BIN_FILE=bin/"${PWD##*/}"
-	echo $BIN_FILE
-	ensure__or_mkdir bin
-	touch $BIN_FILE
-	echo "#!/bin/zsh" > $BIN_FILE
-}
+#pkg__install(){
+	#echo "in pkg__install"
+	#local BIN_FILE=bin/"${PWD##*/}"
+	#echo $BIN_FILE
+	#ensure__or_mkdir bin
+	#touch $BIN_FILE
+	#echo "#!/bin/zsh" > $BIN_FILE
+#}
 
 #TODOc - Copied / Powerful / Complex
 # exec sudo --login --user "$USER" /bin/sh -c "cd '$PWD'; exec '$SHELL' -l"
+
+

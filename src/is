@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER system
-source $HQ_IMPORTER exiter
-source $HQ_IMPORTER variable
+source $HQ_ system
+source $HQ_ exiter
+source $HQ_ variable
 
 # :: is 
 

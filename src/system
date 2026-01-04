@@ -1,9 +1,9 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER ensure
-source $HQ_IMPORTER narrate
-source $HQ_IMPORTER string
-source $HQ_IMPORTER utter
+source $HQ_ ensure
+source $HQ_ narrate
+source $HQ_ string
+source $HQ_ utter
 
 system__not_implemented(){
 	echo "Error: Functionality not implemented"

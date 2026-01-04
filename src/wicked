@@ -1,10 +1,10 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER exiter
-source $HQ_IMPORTER pointer
-source $HQ_IMPORTER string
-source $HQ_IMPORTER returned
-source $HQ_IMPORTER system
+source $HQ_ exiter
+source $HQ_ pointer
+source $HQ_ string
+source $HQ_ returned
+source $HQ_ system
 
 wicked__array__validate_eval__name() {
 	string_isnt alphanum_und_hyp $1 &&

@@ -1,10 +1,10 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER ensure
-source $HQ_IMPORTER wicked
-source $HQ_IMPORTER variable
-source $HQ_IMPORTER narrate
-source $HQ_IMPORTER relay
+source $HQ_ ensure
+source $HQ_ wicked
+source $HQ_ variable
+source $HQ_ narrate
+source $HQ_ relay
 
 array__padding() {
 	local array=(${(P)1})

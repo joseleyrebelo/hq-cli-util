@@ -1,9 +1,9 @@
 #!/bin/zsh
 
-source $HQ_IMPORTER system
-source $HQ_IMPORTER utter
-source $HQ_IMPORTER exiter
-source $HQ_IMPORTER ensure
+source $HQ_ system
+source $HQ_ utter
+source $HQ_ exiter
+source $HQ_ ensure
 
 string__contains() {
 	[[ $1 == *$2* ]] &&	return 0 || return 1
